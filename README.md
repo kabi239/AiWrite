@@ -1,4 +1,4 @@
-# AiWrite Backend
+# AiWrite
 
 AiWrite is a Spring Boot application that generates essays based on user input. The backend service interacts with the Gemini API to generate the content.
 
