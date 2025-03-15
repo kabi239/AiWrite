@@ -81,7 +81,8 @@ public class EssayService {
                 return "Error: Parts are missing in the response.";
             }
             String text=(String) parts.get(0).get("text");
-            return text.replace("\n"," ");
+            // return text.replace("\n"," ");
+            return text;
         } catch (Exception e) {
             return "Error: Exception occurred while extracting essay content.";
         }

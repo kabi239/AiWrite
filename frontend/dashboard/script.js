@@ -1,35 +1,47 @@
-document.getElementById('essayForm').addEventListener('submit', async function(event) {
-    event.preventDefault();
+document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("essayForm");
+    const resultDiv = document.getElementById("result");
 
-    const topic = document.getElementById('topic').value;
-    const wordCount = document.getElementById('word_count').value;
-    const noOfParagraphs = document.getElementById('no_of_paragraphs').value;
-    const level = document.getElementById('level').value;
+    form.addEventListener("submit", async function (event) {
+        event.preventDefault();
 
-    const requestData = {
-        topic: topic,
-        word_count: wordCount,
-        no_of_paragraphs: noOfParagraphs,
-        level: level
-    };
+        const topic = document.getElementById("topic").value.trim();
+        const wordCount = document.getElementById("word_count").value.trim();
+        const noOfParagraphs = document.getElementById("no_of_paragraphs").value.trim();
+        const level = document.getElementById("level").value;
 
-    try {
-        const response = await fetch('http://localhost:8080/api/generate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestData)
-        });
-
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
+        if (!topic) {
+            resultDiv.innerText = "Please enter a topic.";
+            return;
         }
 
-        const responseData = await response.json();
-        document.getElementById('result').innerText = responseData.content;
-    } catch (error) {
-        console.error('There was a problem with the fetch operation:', error);
-        document.getElementById('result').innerText = 'Error generating essay. Please try again.';
-    }
+        resultDiv.innerText = "Generating essay... Please wait.";
+
+        const requestData = {
+            topic: topic,
+            word_count: wordCount || null,
+            no_of_paragraphs: noOfParagraphs || null,
+            level: level
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/api/generate", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(requestData)
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to generate essay.");
+            }
+
+            const responseData = await response.json();
+            resultDiv.innerText = responseData.content || "Essay generated but content is empty.";
+        } catch (error) {
+            console.error("Fetch error:", error);
+            resultDiv.innerText = "Error generating essay. Please try again.";
+        }
+    });
 });
